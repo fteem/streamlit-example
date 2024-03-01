@@ -1,40 +1,118 @@
-import altair as alt
-import numpy as np
-import pandas as pd
+import pdfkit
+from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
+from flask import render_template_string
 import streamlit as st
+from content import *
+import random
+import pandas as pd
 
-"""
-# Welcome to Streamlit!
+st.set_page_config(layout="centered",
+                   page_icon="🎓",
+                   page_title="Diploma Generator")
+st.title("Performance Review Conversation Starters")
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+env = Environment(loader=FileSystemLoader("."), autoescape=select_autoescape())
+template = env.get_template("template.md")
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+form = st.form("template_form")
+first_name = form.text_input("First name")
+last_name = form.text_input("Last name")
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+performance_designation = form.selectbox(
+  "Performance designation",
+  [
+    "1 / Does not meet expections", "2 / Partially meets expectations",
+    "3 / Meets expectations", "4 / Exceeds Expectations",
+    "5 / Greatly Exceeds Expectations"
+  ],
+  index=0,
+)
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
+promo = form.selectbox("Did you put them up for promo?", ["Yes", "No"],
+                       index=0)
 
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
+got_promo = form.selectbox(
+  "Did they get the promo?",
+  ["N/A", "Yes", "No"],
+  index=0,
+)
 
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
+salary_bump = form.selectbox(
+  "Getting a salary increase?",
+  ["Yes", "No"],
+  index=0,
+)
 
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+bonus = form.selectbox(
+  "Getting a bonus?",
+  ["Yes", "No"],
+  index=0,
+)
+
+performance_equity = form.selectbox(
+  "Getting a performance equity?",
+  ["Yes", "No"],
+  index=0,
+)
+
+rows = []
+
+if performance_designation in [
+    "1 / Does not meet expections", "2 / Partially meets expectations"
+]:
+  rows.append([
+    "The individual gets does not / partially meets expectations",
+    random.choice(BAD_PERF)
+  ])
+
+if promo == "Yes" and got_promo == "No":
+  rows.append(
+    ["If the individual didn't get their promo",
+     random.choice(NO_PROMO)])
+
+rows.append([
+  "The individual is disappointed with their designation (expected higher)",
+  random.choice(NOT_HIGHER_DESIGNATION)
+])
+
+rows.append([
+  "An individual is disappointed that they didn’t get a salary increase",
+  random.choice(NO_SALARY_INCREASE),
+])
+
+rows.append([
+  "A well-performing individual is disappointed that they didn’t get better salary increase",
+  random.choice(SALARY_INCREASE_NOT_ENOUGH),
+])
+
+rows.append(["If the individual does not get bonus", random.choice(NO_BONUS)])
+
+rows.append([
+  "If the individual got bonus last year, but didn't get one this year",
+  random.choice(NO_REPEAT_BONUS)
+])
+
+rows.append([
+  "A well-performing individual does not receive additional equity",
+  random.choice(NO_EQUITY)
+])
+
+df = pd.DataFrame(rows, columns=("Context", "Conversation Starter"))
+
+submit = form.form_submit_button("Generate")
+
+if submit:
+  st.dataframe(df, use_container_width=True, hide_index=True)
+  #html = template.render(rows=rows)
+  #pdf = pdfkit.from_string(html, False)
+  #st.balloons()
+
+  #ight.success("🎉 Your diploma was generated!")
+  #html
+  #st.write("")
+#   right.download_button(
+#     "⬇️ Download PDF",
+#     data=pdf,
+#     file_name="diploma.pdf",
+#     mime="application/octet-stream",
+#   )
