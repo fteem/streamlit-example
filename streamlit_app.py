@@ -1,6 +1,3 @@
-import pdfkit
-from jinja2 import Environment, PackageLoader, select_autoescape, FileSystemLoader
-from flask import render_template_string
 import streamlit as st
 from content import *
 import random
@@ -10,9 +7,6 @@ st.set_page_config(layout="centered",
                    page_icon="🎓",
                    page_title="Diploma Generator")
 st.title("Performance Review Conversation Starters")
-
-env = Environment(loader=FileSystemLoader("."), autoescape=select_autoescape())
-template = env.get_template("template.md")
 
 form = st.form("template_form")
 first_name = form.text_input("First name")
@@ -103,16 +97,3 @@ submit = form.form_submit_button("Generate")
 
 if submit:
   st.dataframe(df, use_container_width=True, hide_index=True)
-  #html = template.render(rows=rows)
-  #pdf = pdfkit.from_string(html, False)
-  #st.balloons()
-
-  #ight.success("🎉 Your diploma was generated!")
-  #html
-  #st.write("")
-#   right.download_button(
-#     "⬇️ Download PDF",
-#     data=pdf,
-#     file_name="diploma.pdf",
-#     mime="application/octet-stream",
-#   )
