@@ -64,32 +64,37 @@ if promo == "Yes" and got_promo == "No":
     ["If the individual didn't get their promo",
      random.choice(NO_PROMO)])
 
-rows.append([
-  "The individual is disappointed with their designation (expected higher)",
-  random.choice(NOT_HIGHER_DESIGNATION)
-])
+if performance_designation in ["3 / Meets expectations", "4 / Exceeds expectations"]:
+  rows.append([
+    "The individual is disappointed with their designation (expected higher)",
+    random.choice(NOT_HIGHER_DESIGNATION)
+  ])
 
-rows.append([
-  "An individual is disappointed that they didn’t get a salary increase",
-  random.choice(NO_SALARY_INCREASE),
-])
+if salary_bump == "No":
+  rows.append([
+    "An individual is disappointed that they didn’t get a salary increase",
+    random.choice(NO_SALARY_INCREASE),
+  ])
 
-rows.append([
-  "A well-performing individual is disappointed that they didn’t get better salary increase",
-  random.choice(SALARY_INCREASE_NOT_ENOUGH),
-])
+if salary_bump == "Yes":
+  rows.append([
+    "A well-performing individual is disappointed that they didn’t get better salary increase",
+    random.choice(SALARY_INCREASE_NOT_ENOUGH),
+  ])
 
-rows.append(["If the individual does not get bonus", random.choice(NO_BONUS)])
+if bonus == "No":
+  rows.append(["If the individual does not get bonus", random.choice(NO_BONUS)])
 
-rows.append([
-  "If the individual got bonus last year, but didn't get one this year",
-  random.choice(NO_REPEAT_BONUS)
-])
+  rows.append([
+    "If the individual got bonus last year, but didn't get one this year",
+    random.choice(NO_REPEAT_BONUS)
+  ])
 
-rows.append([
-  "A well-performing individual does not receive additional equity",
-  random.choice(NO_EQUITY)
-])
+if performance_equity == "No":
+  rows.append([
+    "A well-performing individual does not receive additional equity",
+    random.choice(NO_EQUITY)
+  ])
 
 df = pd.DataFrame(rows, columns=("Context", "Conversation Starter"))
 
