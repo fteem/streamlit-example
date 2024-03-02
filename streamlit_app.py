@@ -1,12 +1,16 @@
 import streamlit as st
 from content import *
 import random
-import pandas as pd
+from jinja2 import Environment, FileSystemLoader
 
 st.set_page_config(layout="centered",
-                   page_icon="🎓",
-                   page_title="Diploma Generator")
+                   page_icon="💼",
+                   page_title="Performance Review Conversation Starters")
 st.title("Performance Review Conversation Starters")
+
+environment = Environment(loader=FileSystemLoader("."))
+scenarios_template = environment.get_template("scenarios.html")
+framework_template = environment.get_template("framework.html")
 
 form = st.form("template_form")
 first_name = form.text_input("First name")
@@ -49,56 +53,160 @@ performance_equity = form.selectbox(
   index=0,
 )
 
-rows = []
+scenarios = []
+framework = []
+
+framework.append([
+  "Set up the conversation and the tone of the meeting",
+  """
+  Open the meeting thanking them for taking the time and give high level overview:
+  
+  * "I'm glad we could set aside this time for your performance review. I want to start by saying that this meeting is a collaborative and open discussion aimed at reflecting on your accomplishments, challenges, and areas for growth over the past period."
+  
+  Explain that it's not only about looking back, but also forward:
+  * "It's important to me that we create a positive and constructive atmosphere where we can speak freely about your experiences, achievements, and any obstacles you've encountered. "
+  * "Our goal today is not just to review what has happened but to look forward, setting clear objectives and developmental paths for your continued growth and success in the team. We'll discuss your strengths, areas where you can improve, and identify opportunities for your professional development."
+  
+  Reinforce the idea that it's a 2-way conversation:
+  * "I'm here to support you, provide feedback, and work together to define actionable steps that will help you achieve your career aspirations. Remember, feedback is a two-way street. I'm also here to listen and learn from you about how we can better support your work and career progression."
+
+  Prepare them for the next section:  
+  * "Your insights into your own work and our team dynamics are invaluable as we strive to create an environment where you and the team can thrive. Let's start by talking about your key achievements over the past review period and go from there."
+
+  Check in before diving in:  
+  * "How does that sound?"
+  """
+])
+
+framework.append([
+  "Summarize performance results, feedback and outcomes",
+  """
+  Start by acknowledging their contributions and efforts.
+
+  * "Firstly, I want to express my gratitude for everything you've achieved this year. Your efforts have been..."
+  * "Reflecting on the past year, what moments were significant for you? From my perspective, I noticed..."
+
+  Emphasize their strengths.
+  * "Now, let's focus on the skills you've showcased. What achievements are you most proud of? From my end, I truly valued..."
+
+  Link their performance to specific recognitions and potential for growth.
+  * "Based on the significant impact of your contributions in areas X, Y, and Z, you've been awarded a XX performance designation, and identified as a Future Leader. Your exceptional talent is crucial to our success, and I'm enthusiastic about what lies ahead for you."
+  * "Your consistent performance at an advanced level has been indispensable, leading to your promotion. Congratulations! I'm keen to discuss the broader influence you can wield at this new tier..."
+
+  Clarify decisions around non-promotion.
+  * "If you were anticipating a promotion and it didn't happen, I understand your disappointment. Let's discuss the reasons behind this decision, whether they stem from performance or organizational needs, and how we can target your career aspirations moving forward."
+
+  View developmental feedback as a stepping stone for advancement.
+  * "Let's examine areas where there's room for improvement. Here are the observations from myself and your peers... Which areas do you believe should be prioritized? How can I assist you in this journey?"
+
+  Gauge their reaction to the feedback.
+  * "How does this feedback sit with you? Does it align with your own observations?"
+  """
+])
+
+framework.append([
+  "Talk about their future in the company and the team, and how they want to develop their career ",
+  """
+  Ask about what are their growth aspirations:
+
+  * "I'd like to explore specific opportunities that align with your personal and professional growth. Are there particular projects that excite you? Are there any leaders within the organization you're eager to learn from or collaborate with? What competencies are you looking to enhance?"
+
+  Link back to previous discussions about career advancement:
+  * "Reflecting on our past discussions about your career path, let's review the progress you've made, any new directions you're considering, and how I can assist you in achieving your goals."
+  """
+])
+
+framework.append([
+  "Talk about compensation",
+  """
+  Start on the same page:
+
+  * Reiterate your company's total compensation package setup. Usually companies the following compensation structure: base salary,  equity, bonus, and additional performance-based equity.
+
+  Start with a summary:
+  * "Given your contributions this year, including leading the [specific project] to success, you'll receive a [specific perctengate] salary increase, [specific amount] bonus, and [specific amount] equity refresh. This reflects our appreciation for your hard work and the value you bring to our team."
+  
+  When discussing salary bumps, spell out the math for them:
+  * "You get a 5% raise to your base. Starting next month, instead of your old salary of 100K, your new annual base salary will be 105K." 
+  
+  When you go into the bonus, explain the bonus structure:
+  * "Per your contract, your bonus is 15%. Based on your performance designation, you're rewarded with 150% of your bonus. In other words, your bonus is your base salary * 0.15 * 1.5 = 22.5K"
+  
+  When discussing equity, continue diving into the numbers.
+  * "This year you are awarded a [specific amount] of equity. It will be vesting quarterly over 1 year. Vesting will commence on April 1, this year."
+ 
+  Make sure the math checks out:
+  * The last thing you want to happen is to miscalculate or incorrectly explain any compensation outcomes. Take your time; don't rush it. If the math doesn't work, either try to debug on the spot with the individual or say that you'll ping HR to get help, and you will follow up with the individual ASAP.
+  """  
+])
+
+framework.append([
+  "Close off",
+  """
+  Celebrate their achievements:
+
+  * "Well done on an outstanding year and achieving your [specific performance designation] designation. It's truly a pleasure having you as part of our team, and I'm looking forward to supporting your continued development."
+
+  Follow up on the action items from the discussion:
+
+  * "Based on our conversation, I take the following actions [specify actions related to completing the action items]."
+  """  
+])
 
 if performance_designation in [
     "1 / Does not meet expections", "2 / Partially meets expectations"
 ]:
-  rows.append([
+  scenarios.append([
     "The individual gets does not / partially meets expectations",
     random.choice(BAD_PERF)
   ])
 
 if promo == "Yes" and got_promo == "No":
-  rows.append(
+  scenarios.append(
     ["If the individual didn't get their promo",
      random.choice(NO_PROMO)])
 
 if performance_designation in ["3 / Meets expectations", "4 / Exceeds expectations"]:
-  rows.append([
+  scenarios.append([
     "The individual is disappointed with their designation (expected higher)",
     random.choice(NOT_HIGHER_DESIGNATION)
   ])
 
 if salary_bump == "No":
-  rows.append([
+  scenarios.append([
     "An individual is disappointed that they didn’t get a salary increase",
     random.choice(NO_SALARY_INCREASE),
   ])
 
 if salary_bump == "Yes":
-  rows.append([
+  scenarios.append([
     "A well-performing individual is disappointed that they didn’t get better salary increase",
     random.choice(SALARY_INCREASE_NOT_ENOUGH),
   ])
 
 if bonus == "No":
-  rows.append(["If the individual does not get bonus", random.choice(NO_BONUS)])
+  scenarios.append(["If the individual does not get bonus", random.choice(NO_BONUS)])
 
-  rows.append([
+  scenarios.append([
     "If the individual got bonus last year, but didn't get one this year",
     random.choice(NO_REPEAT_BONUS)
   ])
 
 if performance_equity == "No":
-  rows.append([
+  scenarios.append([
     "A well-performing individual does not receive additional equity",
     random.choice(NO_EQUITY)
   ])
 
-df = pd.DataFrame(rows, columns=("Context", "Conversation Starter"))
 
 submit = form.form_submit_button("Generate")
 
 if submit:
-  st.dataframe(df, use_container_width=True, hide_index=True)
+  st.write("<h3>Main conversation<h3/>", unsafe_allow_html=True)
+  conversations_content = framework_template.render(rows=framework)
+  st.write(conversations_content, unsafe_allow_html=True)
+  st.write("<br/><br/><br/>", unsafe_allow_html=True)
+
+  scenarios_content = scenarios_template.render(rows=scenarios)
+  st.write("<h3>Conversation scenarios<h3/>", unsafe_allow_html=True)
+  st.write(scenarios_content, unsafe_allow_html=True)
