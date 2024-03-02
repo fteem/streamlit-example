@@ -1,5 +1,6 @@
 import streamlit as st
 from content import *
+from framework_content import *
 import random
 from jinja2 import Environment, FileSystemLoader
 
@@ -60,22 +61,22 @@ framework.append([
   "Set up the conversation and the tone of the meeting",
   """
   Open the meeting thanking them for taking the time and give high level overview:
-  
-  * "I'm glad we could set aside this time for your performance review. I want to start by saying that this meeting is a collaborative and open discussion aimed at reflecting on your accomplishments, challenges, and areas for growth over the past period."
+
+  * "%s"
   
   Explain that it's not only about looking back, but also forward:
-  * "It's important to me that we create a positive and constructive atmosphere where we can speak freely about your experiences, achievements, and any obstacles you've encountered. "
-  * "Our goal today is not just to review what has happened but to look forward, setting clear objectives and developmental paths for your continued growth and success in the team. We'll discuss your strengths, areas where you can improve, and identify opportunities for your professional development."
+  * "%s"
+  * "%s"
   
   Reinforce the idea that it's a 2-way conversation:
-  * "I'm here to support you, provide feedback, and work together to define actionable steps that will help you achieve your career aspirations. Remember, feedback is a two-way street. I'm also here to listen and learn from you about how we can better support your work and career progression."
+  * "%s"
 
   Prepare them for the next section:  
-  * "Your insights into your own work and our team dynamics are invaluable as we strive to create an environment where you and the team can thrive. Let's start by talking about your key achievements over the past review period and go from there."
+  * "%s"
 
   Check in before diving in:  
   * "How does that sound?"
-  """
+  """ % (random.choice(OPENING), random.choice(ATMOSPHERE), random.choice(GOALS), random.choice(TWO_WAY), random.choice(NEXT_SECTION_PREP))
 ])
 
 framework.append([
@@ -83,11 +84,11 @@ framework.append([
   """
   Start by acknowledging their contributions and efforts.
 
-  * "Firstly, I want to express my gratitude for everything you've achieved this year. Your efforts have been..."
-  * "Reflecting on the past year, what moments were significant for you? From my perspective, I noticed..."
+  * "%s"
+  * "%s"
 
   Emphasize their strengths.
-  * "Now, let's focus on the skills you've showcased. What achievements are you most proud of? From my end, I truly valued..."
+  * "%s"
 
   Link their performance to specific recognitions and potential for growth.
   * "Based on the significant impact of your contributions in areas X, Y, and Z, you've been awarded a XX performance designation, and identified as a Future Leader. Your exceptional talent is crucial to our success, and I'm enthusiastic about what lies ahead for you."
@@ -101,7 +102,7 @@ framework.append([
 
   Gauge their reaction to the feedback.
   * "How does this feedback sit with you? Does it align with your own observations?"
-  """
+  """ % (random.choice(GRATITUDE), random.choice(REFLECTION), random.choice(SHOWCASE))
 ])
 
 framework.append([
