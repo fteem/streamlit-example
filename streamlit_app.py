@@ -14,8 +14,6 @@ scenarios_template = environment.get_template("scenarios.html")
 framework_template = environment.get_template("framework.html")
 
 form = st.form("template_form")
-first_name = form.text_input("First name")
-last_name = form.text_input("Last name")
 
 performance_designation = form.selectbox(
   "Performance designation",
